@@ -1,0 +1,71 @@
+#include "Timer.h"
+
+int in_pin_1 = 6;
+int in_pin_2 = 12;
+int in_pin_3 = 2;
+int in_pin_4 = 10;
+int in_1_state = 0;
+int in_2_state = 0;
+int in_3_state = 0;
+int in_4_state = 0;
+int out_pin_buzz = 9;
+int out_pin_led = 7;
+// LOW means the button is currently being pressed
+int button_pressed = LOW;
+int button_not_pressed = HIGH;
+int thingie_on = HIGH;
+int thingie_off = LOW;
+Timer t;
+
+
+void function_that_turns_them_off() {
+  digitalWrite(out_pin_buzz, thingie_off);
+  digitalWrite(out_pin_led, thingie_off);
+}
+
+void pressed_buzz() {
+  digitalWrite(out_pin_buzz, thingie_on);
+  digitalWrite(out_pin_led, thingie_on);
+  t.after(1000, function_that_turns_them_off);
+}
+
+void done_buzz() {
+  t.oscillate(out_pin_buzz, 1000, thingie_off, 3);
+  t.oscillate(out_pin_led, 1000, thingie_off, 3);
+}
+
+
+void setup() {
+  pinMode(out_pin_buzz, OUTPUT);
+  pinMode(out_pin_led, OUTPUT);
+  pinMode(in_pin_1, INPUT_PULLUP);
+  pinMode(in_pin_2, INPUT_PULLUP);
+  pinMode(in_pin_3, INPUT_PULLUP);
+  pinMode(in_pin_4, INPUT_PULLUP);
+  digitalWrite(out_pin_buzz, thingie_off);
+  digitalWrite(out_pin_led, thingie_off);
+}
+
+void loop() {
+  t.update();
+  in_1_state = digitalRead(in_pin_1);
+  in_2_state = digitalRead(in_pin_2);
+  in_3_state = digitalRead(in_pin_3);
+  in_4_state = digitalRead(in_pin_4);
+  if (in_1_state == button_pressed) {
+    pressed_buzz();
+    t.after(9 * 1000, done_buzz);
+  }
+  if (in_2_state == button_pressed) {
+    pressed_buzz();
+    t.after(14 * 1000, done_buzz);
+  }
+  if (in_3_state == button_pressed) {
+    pressed_buzz();
+    t.after(19 * 1000, done_buzz);
+  }
+  if (in_4_state == button_pressed) {
+    pressed_buzz();
+    t.after(24 * 1000, done_buzz);
+  }
+}
